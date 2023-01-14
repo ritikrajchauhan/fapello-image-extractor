@@ -2,26 +2,42 @@ import os
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
+# Edit these variables according to each model
+count = 100                                                                             #Number of images in range 1 to 1000
+name = 'ModelName'                                                                    #Name of the model
+savePath = 'C:\PathExample'                                                                 #Path of the folder for saving the images and videos
+link = 'https://fapello.com/content/e/l/ModelName/1000/ModelName_0001.jpg'          #Link of the model's one image
 
 a = []
-count = 1000 #Number of images
 for i in range(0, count+1):
     a.append(str(i).rjust(4, '0'))
 
-name = 'example' #Name of the folder (Name of the model)
+savePath += '\\' + name + '\\'
+link = link[:-8]
 
-os.mkdir('F:/' + name + '/') #Path of the folder to be created
+os.mkdir(savePath)
 
 for i in range(1, len(a)):
     call = a[i]
-    url = 'https://fapello.com/content/h/a/example/1000/example_' + call + '.jpg' #URL of the images excluding the "number.jpg"
+    url = link + call + '.jpg'
+    urlVideo = link + call + '.mp4'
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-    try:
-        webpage = urlopen(req).read()
-    except HTTPError as err:
-        if err.code == 404:
-            continue
-    #webpage = urlopen(req).read()
-    f = open('F:/' + name + '/' + name + '_' + call + '.jpg', 'wb') #Path of the folder + name of the folder + name of the image
-    f.write(webpage)
-    f.close()
+    reqVideo = Request(urlVideo, headers={'User-Agent': 'Mozilla/5.0'})
+    if(True):
+        try:
+            webpage = urlopen(reqVideo).read()
+            #webpage = urlopen(req).read()
+            f = open(savePath + name + '_' + call + '.mp4', 'wb')
+            f.write(webpage)
+            f.close()
+        except HTTPError as err:
+            if err.code == 404:
+                try:
+                    webpage = urlopen(req).read()
+                except HTTPError as err:
+                    if err.code == 404:
+                        continue
+                #webpage = urlopen(req).read()
+                f = open(savePath + name + '_' + call + '.jpg', 'wb')
+                f.write(webpage)
+                f.close()
